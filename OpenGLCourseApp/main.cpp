@@ -80,7 +80,7 @@ int main() {
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTexture();
-	dirtTexture = Texture("Textures/brick.png");
+	dirtTexture = Texture("Textures/dirt.png");
 	dirtTexture.LoadTexture();
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0;
