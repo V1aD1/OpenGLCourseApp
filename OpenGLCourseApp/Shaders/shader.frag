@@ -4,13 +4,16 @@
 struct DirectionalLight {
 	vec3 color;
 	float ambientIntensity;
+	vec3 direction;
+	float diffuseIntensity;
 };				
 				
 //in variables are passed in from vertex shader,
 //by setting the value of out variables in the vertex shader main()				
 in vec4 vCol;	
 in vec2 TexCoord;
-																																																													
+in vec3 Normal;				
+				
 out	vec4 colour;												
 		
 //uniform variables are used to communicate with shaders from the outside
@@ -24,6 +27,11 @@ uniform DirectionalLight directionalLight;
 void main()														
 {									
 	vec4 ambientColor = vec4(directionalLight.color, 1.0f) * directionalLight.ambientIntensity;
-							
-	colour = texture(theTexture, TexCoord) * ambientColor;							
+	
+	//diffuse lighting is affected by angle between normal of surface and vector towards light
+	float diffuseFactor = max(dot(normalize(Normal), normalize(directionalLight.direction)), 0.0f);	
+	vec4 diffuseColor = vec4(directionalLight.color, 1.0f) * directionalLight.diffuseIntensity * diffuseFactor;
+	
+	colour = texture(theTexture, TexCoord) * (ambientColor + diffuseColor);		
+	
 }
