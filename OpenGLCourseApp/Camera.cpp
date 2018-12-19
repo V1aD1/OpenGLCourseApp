@@ -47,6 +47,7 @@ void Camera::KeyControl(bool * keys, GLfloat deltaTime)
 		position += worldUp * moveSpeed * velocity;
 	}
 
+	printf("position.x: %f position.y: %f position.z: %f \n", position.x, position.y, position.z);
 }
 
 void Camera::MouseControl(GLfloat xChange, GLfloat yChange)
@@ -61,10 +62,18 @@ void Camera::MouseControl(GLfloat xChange, GLfloat yChange)
 		pitch = 89.0f;
 	}
 
-	if (pitch < -89.0f)
+	if (pitch < -89.0f) {
 		pitch = 89.0f;
+	}
+
+	//printf("pitch: %f, yaw: %f \n", pitch, yaw);
 
 	Update();
+}
+
+glm::vec3 Camera::GetCameraPosition()
+{
+	return position;
 }
 
 glm::mat4 Camera::CalculateViewMatrix()

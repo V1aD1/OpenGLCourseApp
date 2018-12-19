@@ -18,6 +18,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "Light.h"
+#include "Material.h"
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -27,6 +28,9 @@ std::vector<Shader> shaderList;
 Camera camera;
 
 Texture brickTexture, dirtTexture;
+
+Material shinyMaterial;
+Material dullMaterial;
 
 Light mainLight;
 
@@ -93,9 +97,9 @@ void CreateObjects() {
 	//triangle vertices
 	GLfloat vertices[] = {
 	//		x	   y	 z	   u     v  norm.x  norm.y  norm.z
-		-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,   0.0f,   0.0f,   0.0f,
+		-1.0f, -1.0f, -0.6f, 0.0f, 0.0f,   0.0f,   0.0f,   0.0f,
 		 0.0f, -1.0f, 1.0f, 0.5f, 0.0f,   0.0f,   0.0f,   0.0f,
-		 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,   0.0f,   0.0f,   0.0f,
+		 1.0f, -1.0f, -0.6f, 1.0f, 0.0f,   0.0f,   0.0f,   0.0f,
 		 0.0f,  1.0f, 0.0f, 0.5f, 1.0f,   0.0f,   0.0f,   0.0f
 	};
 
@@ -118,22 +122,26 @@ void CreateShaders() {
 
 int main() {
 
-	mainWindow = Window(800, 600);
+	mainWindow = Window(1280, 800);
 	mainWindow.Initialise();
 
 	CreateObjects();
 	CreateShaders();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.4f);
-	mainLight = Light(1.0f, 1.0f, 1.0f, 0.3f, 2.0f, -1.0f, -2.0f, 1.0f);
+	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 0.1f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTexture();
 	dirtTexture = Texture("Textures/dirt.png");
 	dirtTexture.LoadTexture();
 
+	shinyMaterial = Material(1.0f, 32.0f);
+	dullMaterial = Material(0.3f, 4);
+
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformAmbientIntensity = 0, 
-		   uniformAmbientColor = 0, uniformDirection = 0, uniformDiffuseIntensity = 0;
+		   uniformAmbientColor = 0, uniformDirection = 0, uniformDiffuseIntensity = 0,
+		   uniformEyePosition = 0, uniformSpecularIntensity = 0, uniformShininess = 0;
 
 	glm::mat4 projection = glm::perspective(45.0f, mainWindow.GetBufferWidth() / mainWindow.GetBufferHeight(), 0.1f, 100.0f);
 
@@ -161,29 +169,36 @@ int main() {
 		uniformAmbientIntensity = shaderList[0].GetAmbientIntensityLocation();
 		uniformDirection = shaderList[0].GetDirectionLocation();
 		uniformDiffuseIntensity = shaderList[0].GetDiffuseIntensityLocation();
+		uniformEyePosition = shaderList[0].GetEyePositionLocation();
+		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+		uniformShininess = shaderList[0].GetShininessLocation();
 
 		mainLight.UseLight(uniformAmbientIntensity, uniformAmbientColor, uniformDiffuseIntensity, uniformDirection);
 
-		glm::mat4 model;
-		model = glm::translate(model, glm::vec3(0.0f, 0.5f, -2.5f));
-		model = glm::rotate(model, 45.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.CalculateViewMatrix()));
+		glUniform3f(uniformEyePosition, camera.GetCameraPosition().x, camera.GetCameraPosition().y, camera.GetCameraPosition().z);
+
+		glm::mat4 model;
+		model = glm::translate(model, glm::vec3(0.0f, -1.0f, -6.0f));
+		//model = glm::rotate(model, 45.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 
 		//must be called before RenderMesh()
 		brickTexture.UseTexture();
+		shinyMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[0]->RenderMesh();
 
 		model = glm::mat4();
-		model = glm::translate(model, glm::vec3(0.0f, -0.5f, -2.5f));
-		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 1.4f, -6.0f));
+		//model = glm::scale(model, glm::vec3(0.4f, 0.4f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 
 		//must be called before RenderMesh()
 		dirtTexture.UseTexture();
+		dullMaterial.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[1]->RenderMesh();
 
 
