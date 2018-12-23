@@ -128,7 +128,7 @@ int main() {
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.4f);
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.1f);
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 								0.2f, 0.1f,
 								2.0f, -1.0f, -2.0f);
