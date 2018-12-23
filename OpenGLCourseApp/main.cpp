@@ -17,7 +17,7 @@
 #include  "Window.h"
 #include "Camera.h"
 #include "Texture.h"
-#include "Light.h"
+#include "DirectionalLight.h"
 #include "Material.h"
 
 const float toRadians = 3.14159265f / 180.0f;
@@ -32,7 +32,7 @@ Texture brickTexture, dirtTexture;
 Material shinyMaterial;
 Material dullMaterial;
 
-Light mainLight;
+DirectionalLight mainLight;
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -129,7 +129,9 @@ int main() {
 	CreateShaders();
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 2.0f, 0.4f);
-	mainLight = Light(1.0f, 1.0f, 1.0f, 0.2f, 2.0f, -1.0f, -2.0f, 0.1f);
+	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
+								0.2f, 0.1f,
+								2.0f, -1.0f, -2.0f);
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTexture();
