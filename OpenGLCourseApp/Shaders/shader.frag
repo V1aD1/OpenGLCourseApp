@@ -36,7 +36,7 @@ in vec3 FragPos;
 out	vec4 color;												
 		
 //should be the same value as MAX_POINT_LIGHTS in C++ project
-const int MAX_POINT_LIGHTS = 1;		
+const int MAX_POINT_LIGHTS = 3;		
 
 		
 //uniform variables are used to communicate with shaders from the outside
