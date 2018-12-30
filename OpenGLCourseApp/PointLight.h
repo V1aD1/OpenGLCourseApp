@@ -5,18 +5,18 @@ class PointLight :
 {
 public:
 	PointLight();
-	PointLight(GLfloat red, GLfloat green, GLfloat blue, 
-				GLfloat aIntensity, GLfloat dIntensity, 
-				GLfloat xPos, GLfloat yPos, GLfloat zPos, 
-				GLfloat con, GLfloat lin, GLfloat exp);
+	PointLight(GLfloat red, GLfloat green, GLfloat blue,
+		GLfloat aIntensity, GLfloat dIntensity,
+		GLfloat xPos, GLfloat yPos, GLfloat zPos,
+		GLfloat con, GLfloat lin, GLfloat exp);
 
-	void UseLight(GLuint ambientIntensityLocation, GLuint ambientColorLocation, GLuint diffuseIntensityLocation, 
-					GLuint positionLocation, 
-					GLfloat constantLocation, GLfloat linearLocation, GLfloat exponentLocation);
+	void UseLight(GLuint ambientIntensityLocation, GLuint ambientColorLocation, GLuint diffuseIntensityLocation,
+		GLuint positionLocation,
+		GLuint constantLocation, GLuint linearLocation, GLuint exponentLocation);
 
 	~PointLight();
 
-private:
+protected:
 	glm::vec3 position;
 	GLfloat constant, linear, exponent;
 };

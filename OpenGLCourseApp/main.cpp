@@ -14,6 +14,7 @@
 
 #include "CommonValues.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 
 #include "Mesh.h"
 #include "Shader.h"
@@ -22,6 +23,7 @@
 #include "Texture.h"
 #include "DirectionalLight.h"
 #include "Material.h"
+
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -37,6 +39,7 @@ Material dullMaterial;
 
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
+SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
@@ -107,7 +110,7 @@ void CreateObjects() {
 			 0.0f,  1.0f, 0.0f, 0.5f, 1.0f,   0.0f,   0.0f,   0.0f
 	};
 
-	unsigned int floorIndices[] = 
+	unsigned int floorIndices[] =
 	{
 		0, 2 , 1,
 		1, 2, 3,
@@ -156,19 +159,38 @@ int main() {
 
 	unsigned int pointLightCount = 0;
 
-	pointLights[0] = PointLight(0.0f, 0.0f, 1.0f,
+	/*pointLights[0] = PointLight(0.0f, 0.0f, 1.0f,
 		0.5f, 1.0f,
 		-5.0f, 1.0f, -5.0f,
 		0.3f, 0.2f, 0.1f);
 
-	pointLightCount++ ;
+	pointLightCount++;
 
 	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
 		0.1f, 1.0f,
 		5.0f, 1.0f, -5.0f,
 		0.3f, 0.2f, 0.1f);
 
-	pointLightCount++;
+	pointLightCount++;*/
+
+	unsigned int spotLightCount = 0;
+	spotLights[0] = SpotLight(0.8f, 0.1f, 0.1f,
+		3.0f, 3.0f,
+		3.0f, 4.0f, -3.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.2f, 0.1f,
+		20.0f);
+
+	spotLightCount++;
+
+	spotLights[1] = SpotLight(0.1f, 0.1f, 0.8f,
+		3.0f, 3.0f,
+		-3.0f, 4.0f, -3.0f,
+		0.0f, -1.0f, 0.0f,
+		0.3f, 0.2f, 0.1f,
+		5.0f);
+
+	spotLightCount++;
 
 	brickTexture = Texture("Textures/brick.png");
 	brickTexture.LoadTexture();
@@ -208,8 +230,12 @@ int main() {
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
+		//set camera to have a flashlight
+		//spotLights[0].SetFlash(camera.GetCameraPosition(), camera.GetCameraDirection());
+
 		shaderList[0].SetDirectionalLght(&mainLight);
 		shaderList[0].SetPointLights(pointLights, pointLightCount);
+		shaderList[0].SetSpotLights(spotLights, spotLightCount);
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.CalculateViewMatrix()));
