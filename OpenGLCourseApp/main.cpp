@@ -24,6 +24,7 @@
 #include "DirectionalLight.h"
 #include "Material.h"
 
+#include <assimp/Importer.hpp>
 
 const float toRadians = 3.14159265f / 180.0f;
 
@@ -193,9 +194,9 @@ int main() {
 	spotLightCount++;
 
 	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTexture();
+	brickTexture.LoadTextureA();
 	dirtTexture = Texture("Textures/dirt.png");
-	dirtTexture.LoadTexture();
+	dirtTexture.LoadTextureA();
 
 	shinyMaterial = Material(4.0f, 256);
 	dullMaterial = Material(0.3f, 4);
