@@ -30,6 +30,6 @@ private:
 
 	std::vector<Mesh*> meshList;
 	std::vector<Texture*> textureList;
-	std::vector<unsigned int> meshToText;
+	std::vector<unsigned int> meshToTex;
 };
 
